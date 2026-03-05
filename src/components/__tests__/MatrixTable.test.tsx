@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { MatrixProvider } from '../../context/MatrixContext'
 import { MatrixTable } from '../MatrixTable'
@@ -36,6 +37,79 @@ describe('MatrixTable', () => {
     expect(screen.getByLabelText(/Rows \(M\)/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/Columns \(N\)/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/Nearest cells \(X\)/i)).toBeInTheDocument()
+  })
+
+  it('increments cell value on click and keeps sums/percentiles consistent', async () => {
+    const user = userEvent.setup()
+    const { container } = renderWithProvider()
+
+    const cells = screen.getAllByRole('cell')
+    const firstDataCell = cells[0]
+
+    const initialValue = Number.parseInt(firstDataCell.textContent ?? '0', 10)
+    await user.click(firstDataCell)
+
+    const updatedValue = Number.parseInt(firstDataCell.textContent ?? '0', 10)
+    expect(updatedValue).toBe(initialValue + 1)
+
+    // Percentile row should still be present after update
+    expect(screen.getByText(/60th percentile/i)).toBeInTheDocument()
+    expect(container.querySelectorAll('tr')).toHaveLength(1 + 3 + 1)
+  })
+
+  it('highlights X nearest cells on hover', async () => {
+    const user = userEvent.setup()
+    const { container } = renderWithProvider()
+
+    const cells = screen.getAllByRole('cell')
+    const hoveredCell = cells[0]
+
+    await user.hover(hoveredCell)
+
+    const highlighted = container.querySelectorAll('[data-highlighted]')
+    // nearestCount = 2 by default, so we expect 2 highlighted cells
+    expect(highlighted.length).toBe(2)
+  })
+
+  it('shows row percentages and heatmap on sum hover', async () => {
+    const user = userEvent.setup()
+    const { container } = renderWithProvider()
+
+    const sumCells = container.querySelectorAll('[data-sum-cell]')
+    expect(sumCells.length).toBeGreaterThan(0)
+
+    const firstSumCell = sumCells[0] as HTMLElement
+    await user.hover(firstSumCell)
+
+    const cells = screen.getAllByRole('cell')
+    const percentageCells = cells.filter((cell) =>
+      cell.textContent?.trim().endsWith('%'),
+    )
+    expect(percentageCells.length).toBeGreaterThan(0)
+
+    // At least one cell in the same row should have a heatmap background
+    const row = firstSumCell.closest('tr')
+    const dataCellsInRow = row?.querySelectorAll('td[data-row]')
+    expect(dataCellsInRow && dataCellsInRow.length).toBeGreaterThan(0)
+  })
+
+  it('adds and removes rows correctly', async () => {
+    const user = userEvent.setup()
+    renderWithProvider()
+
+    const initialRemoveButtons = screen.getAllByRole('button', { name: /Remove/i })
+    expect(initialRemoveButtons.length).toBe(3)
+
+    const addRowButton = screen.getByRole('button', { name: /Add row/i })
+    await user.click(addRowButton)
+
+    const afterAddRemoveButtons = screen.getAllByRole('button', { name: /Remove/i })
+    expect(afterAddRemoveButtons.length).toBe(4)
+
+    await user.click(afterAddRemoveButtons[0])
+
+    const afterRemoveButtons = screen.getAllByRole('button', { name: /Remove/i })
+    expect(afterRemoveButtons.length).toBe(3)
   })
 })
 

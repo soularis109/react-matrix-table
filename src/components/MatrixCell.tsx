@@ -21,6 +21,9 @@ export function MatrixCell({
 }: MatrixCellProps) {
   const {
     state: { highlightedCellIds },
+    incrementCell,
+    setHoveredCell,
+    clearHoveredCell,
   } = useMatrix()
 
   const isHighlighted = highlightedCellIds.includes(cell.id)
@@ -35,7 +38,14 @@ export function MatrixCell({
   }
 
   return (
-    <td data-row={rowIndex} data-col={colIndex} data-highlighted={isHighlighted || undefined}>
+    <td
+      data-row={rowIndex}
+      data-col={colIndex}
+      data-highlighted={isHighlighted || undefined}
+      onClick={() => incrementCell(rowIndex, colIndex)}
+      onMouseEnter={() => setHoveredCell(rowIndex, colIndex)}
+      onMouseLeave={() => clearHoveredCell()}
+    >
       <div style={{ position: 'relative' }}>
         {isPercentageMode && heatmapWidth > 0 && (
           <div
