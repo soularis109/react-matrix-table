@@ -5,18 +5,17 @@ export function findClosestCells(matrix: Matrix, targetCell: Cell, count: number
 
   const allCells: Cell[] = matrix.flat().filter((cell) => cell.id !== targetCell.id)
 
-  const sortedByDiff = allCells
-    .map((cell) => ({
-      cell,
-      diff: Math.abs(cell.amount - targetCell.amount),
-    }))
-    .sort((a, b) => {
-      if (a.diff === b.diff) {
-        return a.cell.id - b.cell.id
-      }
-      return a.diff - b.diff
-    })
+  const sortedByDiff = allCells.toSorted((a, b) => {
+    const diffA = Math.abs(a.amount - targetCell.amount)
+    const diffB = Math.abs(b.amount - targetCell.amount)
 
-  return sortedByDiff.slice(0, count).map((item) => item.cell.id)
+    if (diffA === diffB) {
+      return a.id - b.id
+    }
+
+    return diffA - diffB
+  })
+
+  return sortedByDiff.slice(0, count).map((cell) => cell.id)
 }
 

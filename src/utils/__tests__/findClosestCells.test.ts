@@ -44,6 +44,38 @@ describe('findClosestCells', () => {
     expect(result).toEqual([1, 3])
   })
 
+  it('returns all available ids when count exceeds neighbors', () => {
+    const matrix = makeMatrix(
+      1,
+      3,
+      [
+        [10, 20, 30],
+      ],
+    )
+    const target = matrix[0][1] // amount 20, id 2
+
+    const result = findClosestCells(matrix, target, 10)
+
+    // neighbors: id1 (10, diff 10), id3 (30, diff 10) -> order by diff then id => [1,3]
+    expect(result).toEqual([1, 3])
+  })
+
+  it('handles zero and negative amounts', () => {
+    const matrix = makeMatrix(
+      1,
+      4,
+      [
+        [-10, 0, 5, -5],
+      ],
+    )
+    const target = matrix[0][1] // amount 0, id 2
+
+    const result = findClosestCells(matrix, target, 3)
+
+    // diffs: id1=10, id3=5, id4=5 => order by diff then id => [3,4,1]
+    expect(result).toEqual([3, 4, 1])
+  })
+
   it('breaks ties by cell id for deterministic ordering', () => {
     const matrix = makeMatrix(
       1,
