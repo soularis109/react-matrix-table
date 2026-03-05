@@ -1,14 +1,54 @@
 import {
   createContext,
   type Dispatch,
+  useEffect,
+  useRef,
   type PropsWithChildren,
   type ReactNode,
   useMemo,
   useReducer,
 } from 'react'
-import type { Cell, Matrix } from '../types/matrix'
+import type { Cell, ContextState, Matrix } from '../types/matrix'
 import { generateMatrix } from '../utils/generateMatrix'
 import { findClosestCells } from '../utils/findClosestCells'
+
+const STORAGE_KEY = 'react-matrix-table-state'
+
+function parseSavedState(raw: string | null): MatrixState | null {
+  if (!raw) return null
+  try {
+    const data = JSON.parse(raw) as unknown
+    if (!data || typeof data !== 'object') return null
+    const o = data as Record<string, unknown>
+    if (!Array.isArray(o.matrix) || typeof o.rows !== 'number' || typeof o.cols !== 'number')
+      return null
+    const rows = Number(o.rows)
+    const cols = Number(o.cols)
+    if (rows < 0 || rows > 100 || cols < 0 || cols > 100) return null
+    const matrix = o.matrix as unknown[]
+    if (matrix.length !== rows) return null
+    for (const row of matrix) {
+      if (!Array.isArray(row) || row.length !== cols) return null
+      for (const cell of row as unknown[]) {
+        if (!cell || typeof (cell as Cell).id !== 'number' || typeof (cell as Cell).amount !== 'number') return null
+      }
+    }
+    const nextId = typeof o.nextId === 'number' ? o.nextId : rows * cols + 1
+    const nearestCount = typeof o.nearestCount === 'number' ? o.nearestCount : 0
+    return {
+      matrix: o.matrix as Matrix,
+      rows,
+      cols,
+      nearestCount: Math.max(0, Math.min(nearestCount, Math.max(0, rows * cols - 1))),
+      hoveredCell: null,
+      hoveredSumRowIndex: null,
+      highlightedCellIds: [],
+      nextId,
+    }
+  } catch {
+    return null
+  }
+}
 
 export type HoveredCell = {
   rowIndex: number
@@ -16,16 +56,7 @@ export type HoveredCell = {
   cell: Cell
 }
 
-export type MatrixState = {
-  matrix: Matrix
-  rows: number
-  cols: number
-  nearestCount: number
-  hoveredCell: HoveredCell | null
-  highlightedCellIds: number[]
-  hoveredSumRowIndex: number | null
-  nextId: number
-}
+export type MatrixState = ContextState
 
 type SetDimensionsAction = {
   type: 'SET_DIMENSIONS'
@@ -89,22 +120,12 @@ function clampNearestCount(state: MatrixState, requested: number): number {
 
 function recalcHighlights(state: MatrixState): MatrixState {
   if (!state.hoveredCell || state.nearestCount <= 0) {
-    return {
-      ...state,
-      highlightedCellIds: [],
-    }
+    return { ...state, highlightedCellIds: [] }
   }
-
   const { cell } = state.hoveredCell
   const count = clampNearestCount(state, state.nearestCount)
-
   const highlightedCellIds = findClosestCells(state.matrix, cell, count)
-
-  return {
-    ...state,
-    nearestCount: count,
-    highlightedCellIds,
-  }
+  return { ...state, nearestCount: count, highlightedCellIds }
 }
 
 export function createInitialMatrixState(
@@ -124,8 +145,8 @@ export function createInitialMatrixState(
     cols: safeCols,
     nearestCount,
     hoveredCell: null,
-    highlightedCellIds: [],
     hoveredSumRowIndex: null,
+    highlightedCellIds: [],
     nextId,
   }
 
@@ -152,11 +173,7 @@ export function matrixReducer(state: MatrixState, action: MatrixAction): MatrixS
 
     case 'SET_NEAREST_COUNT': {
       const count = clampNearestCount(state, action.payload.nearestCount)
-      const updated: MatrixState = {
-        ...state,
-        nearestCount: count,
-      }
-      return recalcHighlights(updated)
+      return recalcHighlights({ ...state, nearestCount: count })
     }
 
     case 'INCREMENT_CELL': {
@@ -178,12 +195,7 @@ export function matrixReducer(state: MatrixState, action: MatrixAction): MatrixS
           : row,
       )
 
-      const updated: MatrixState = {
-        ...state,
-        matrix,
-      }
-
-      return recalcHighlights(updated)
+      return recalcHighlights({ ...state, matrix })
     }
 
     case 'ADD_ROW': {
@@ -199,14 +211,12 @@ export function matrixReducer(state: MatrixState, action: MatrixAction): MatrixS
       const newRow = newRowMatrix[0]
       const nextId = state.nextId + state.cols
 
-      const updated: MatrixState = {
+      return recalcHighlights({
         ...state,
         matrix: [...state.matrix, newRow],
         rows: state.rows + 1,
         nextId,
-      }
-
-      return recalcHighlights(updated)
+      })
     }
 
     case 'REMOVE_ROW': {
@@ -239,15 +249,13 @@ export function matrixReducer(state: MatrixState, action: MatrixAction): MatrixS
         }
       }
 
-      const updated: MatrixState = {
+      return recalcHighlights({
         ...state,
         matrix,
         rows,
         hoveredCell,
         hoveredSumRowIndex,
-      }
-
-      return recalcHighlights(updated)
+      })
     }
 
     case 'SET_HOVERED_CELL': {
@@ -263,13 +271,7 @@ export function matrixReducer(state: MatrixState, action: MatrixAction): MatrixS
 
       const cell = state.matrix[rowIndex][colIndex]
       const hoveredCell: HoveredCell = { rowIndex, colIndex, cell }
-
-      const updated: MatrixState = {
-        ...state,
-        hoveredCell,
-      }
-
-      return recalcHighlights(updated)
+      return recalcHighlights({ ...state, hoveredCell })
     }
 
     case 'CLEAR_HOVERED_CELL': {
@@ -336,8 +338,33 @@ export function MatrixProvider({
   const [state, dispatch]: [MatrixState, Dispatch<MatrixAction>] = useReducer(
     matrixReducerWithDispatch,
     undefined,
-    () => createInitialMatrixState(initialRows, initialCols, initialNearestCount),
+    () => {
+      if (typeof window !== 'undefined') {
+        const saved = parseSavedState(window.localStorage.getItem(STORAGE_KEY))
+        if (saved) return saved
+      }
+      return createInitialMatrixState(initialRows, initialCols, initialNearestCount)
+    },
   )
+
+  const persistTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const PERSIST_DEBOUNCE_MS = 400
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (persistTimeoutRef.current) clearTimeout(persistTimeoutRef.current)
+    persistTimeoutRef.current = setTimeout(() => {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+      } catch {
+        // ignore quota or serialization errors
+      }
+      persistTimeoutRef.current = null
+    }, PERSIST_DEBOUNCE_MS)
+    return () => {
+      if (persistTimeoutRef.current) clearTimeout(persistTimeoutRef.current)
+    }
+  }, [state])
 
   const value: MatrixContextValue = useMemo(
     () => ({

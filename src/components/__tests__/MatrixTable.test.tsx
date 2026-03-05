@@ -111,5 +111,49 @@ describe('MatrixTable', () => {
     const afterRemoveButtons = screen.getAllByRole('button', { name: /Remove/i })
     expect(afterRemoveButtons.length).toBe(3)
   })
+
+  it('renders empty table when M=0 and N=0 without crashing', () => {
+    render(
+      <MatrixProvider initialRows={0} initialCols={0} initialNearestCount={0}>
+        <MatrixTable />
+      </MatrixProvider>,
+    )
+
+    expect(screen.getByRole('table')).toBeInTheDocument()
+    expect(screen.getByText(/Row SUM/i)).toBeInTheDocument()
+    const rows = screen.getAllByRole('row')
+    expect(rows.length).toBe(1)
+  })
+
+  it('single cell (M=1, N=1): increment works', async () => {
+    const user = userEvent.setup()
+    render(
+      <MatrixProvider initialRows={1} initialCols={1} initialNearestCount={0}>
+        <MatrixTable />
+      </MatrixProvider>,
+    )
+
+    const cells = screen.getAllByRole('cell')
+    const dataCell = cells[0]
+    const before = Number.parseInt(dataCell.textContent ?? '0', 10)
+    await user.click(dataCell)
+    const after = Number.parseInt(dataCell.textContent ?? '0', 10)
+    expect(after).toBe(before + 1)
+  })
+
+  it('when X=0, hover does not highlight any cell', async () => {
+    const user = userEvent.setup()
+    const { container } = render(
+      <MatrixProvider initialRows={2} initialCols={2} initialNearestCount={0}>
+        <MatrixTable />
+      </MatrixProvider>,
+    )
+
+    const cells = screen.getAllByRole('cell')
+    await user.hover(cells[0])
+
+    const highlighted = container.querySelectorAll('[data-highlighted]')
+    expect(highlighted.length).toBe(0)
+  })
 })
 

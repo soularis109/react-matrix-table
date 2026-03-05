@@ -1,11 +1,12 @@
 section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-  padding: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 18px;
+  padding: 24px 24px 20px;
   box-shadow:
-    0 10px 25px rgba(15, 23, 42, 0.12),
-    0 1px 3px rgba(15, 23, 42, 0.06);
-  backdrop-filter: blur(10px);
+    0 18px 45px rgba(15, 23, 42, 0.06),
+    0 2px 8px rgba(15, 23, 42, 0.03);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 section > header {
@@ -19,12 +20,13 @@ section > header {
 section > header h1 {
   margin: 0;
   font-size: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
 section > header > div {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 12px 16px;
 }
 
 section > header label {
@@ -38,42 +40,103 @@ section > header label {
 
 section > header input[type='number'] {
   margin-top: 4px;
-  padding: 4px 8px;
-  border-radius: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
   border: 1px solid #d1d5db;
   font-size: 0.9rem;
-  min-width: 80px;
+  min-width: 88px;
+  background-color: #f9fafb;
+  color: #111827;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    background-color 0.18s ease-out;
 }
 
 section > header input[type='number']:focus {
-  outline: 2px solid #2563eb;
-  outline-offset: 1px;
+  outline: none;
   border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+}
+
+/* Loading skeletons */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 0%,
+    #f3f4f6 50%,
+    #e5e7eb 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-row td,
+.skeleton-row th {
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+.skeleton-row .skeleton-cell {
+  height: 20px;
+  min-width: 48px;
+}
+
+.skeleton-header .skeleton-title {
+  height: 28px;
+  width: 140px;
+  border-radius: 6px;
+}
+
+.skeleton-header .skeleton-input {
+  height: 36px;
+  width: 88px;
+  border-radius: 10px;
 }
 
 section > div {
   overflow-x: auto;
-  margin: 8px -8px;
-  padding: 0 8px;
+  margin: 10px -10px 0;
+  padding: 0 10px 2px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.matrix-table-keyboard {
+  outline: none;
+}
+
+.matrix-table-keyboard:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.8);
+  outline-offset: 4px;
+  border-radius: 14px;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 0 6px;
   font-size: 0.9rem;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
 }
 
-thead {
+thead tr {
   background: #f3f4f6;
 }
 
 th,
 td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 12px;
   text-align: right;
   white-space: nowrap;
 }
@@ -90,67 +153,271 @@ thead th {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #6b7280;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f9fafb;
+tbody tr {
+  transition:
+    background-color 0.18s ease-out,
+    box-shadow 0.2s ease-out,
+    transform 0.16s ease-out;
 }
 
-tbody tr:last-child td {
-  border-bottom: none;
+tbody tr:not(:last-child) {
+  background-color: #fff;
+}
+
+tbody tr:not(:last-child) td,
+tbody tr:not(:last-child) th[scope='row'] {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr > th[scope='row'] {
+  border-radius: 999px 0 0 999px;
+}
+
+tbody tr > td:last-child {
+  border-radius: 0 999px 999px 0;
+}
+
+tbody tr:hover {
+  background-color: rgba(249, 250, 251, 0.95);
+  box-shadow:
+    0 8px 18px rgba(15, 23, 42, 0.04),
+    0 1px 3px rgba(15, 23, 42, 0.04);
+  transform: translateY(-1px);
 }
 
 td[data-row][data-col] {
   cursor: pointer;
   position: relative;
   transition:
-    background-color 0.12s ease-out,
-    box-shadow 0.12s ease-out,
-    transform 0.08s ease-out;
+    background-color 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    transform 0.14s ease-out;
+}
+
+td[data-row][data-col] > div {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 2.5ch;
+}
+
+td[data-row][data-col] span {
+  position: relative;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.96rem;
+  letter-spacing: 0.02em;
+  transition:
+    transform 0.18s ease-out,
+    opacity 0.18s ease-out;
 }
 
 td[data-row][data-col]:hover {
   background-color: #eff6ff;
-  box-shadow: inset 0 0 0 1px #bfdbfe;
+  box-shadow: inset 0 0 0 1px rgba(191, 219, 254, 0.9);
+  transform: translateY(-1px);
+}
+
+td[data-row][data-col]:active span {
+  transform: scale(1.05);
+  opacity: 0.92;
 }
 
 td[data-highlighted='true'] {
-  background-color: #dbeafe;
-  box-shadow: inset 0 0 0 1px #2563eb;
+  background-color: transparent;
+}
+
+td[data-highlighted='true']::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 10px;
+  background: radial-gradient(circle at top left, rgba(191, 219, 254, 0.55), rgba(59, 130, 246, 0.12));
+  box-shadow:
+    0 0 0 1px rgba(129, 199, 255, 0.8),
+    0 10px 25px rgba(59, 130, 246, 0.3);
+  opacity: 0.9;
+  z-index: -1;
+  transition:
+    opacity 0.22s ease-out,
+    box-shadow 0.22s ease-out;
+}
+
+td[data-focused='true'] {
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.8);
+  border-radius: 10px;
+  transform: translateY(-1px);
 }
 
 td[data-sum-cell] {
   font-weight: 600;
   color: #111827;
   cursor: pointer;
+  background-color: #f3f4ff;
+  border-radius: 0 999px 999px 0;
+  padding-right: 16px;
+  transition:
+    background-color 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    transform 0.16s ease-out;
+}
+
+td[data-sum-cell]:hover {
+  background-color: #e0e7ff;
+  box-shadow:
+    inset 0 0 0 1px rgba(129, 140, 248, 0.6),
+    0 0 0 1px rgba(129, 140, 248, 0.15);
+  transform: translateY(-1px);
 }
 
 td[data-sum-cell][data-active='true'] {
-  background-color: #fef3c7;
-  box-shadow: inset 0 0 0 1px #fbbf24;
+  background-image: linear-gradient(120deg, rgba(129, 140, 248, 0.16), rgba(59, 130, 246, 0.22));
+  box-shadow:
+    inset 0 0 0 1px rgba(79, 70, 229, 0.55),
+    0 0 0 1px rgba(129, 140, 248, 0.2);
+  color: #4338ca;
+}
+
+/* Heatmap bar (percent mode) – gradient and transition */
+td[data-row][data-col] > div > div {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  transition: width 0.25s ease-out, opacity 0.2s ease-out;
+  background: linear-gradient(
+    90deg,
+    rgba(199, 210, 254, 0.5),
+    rgba(129, 140, 248, 0.35)
+  ) !important;
+}
+
+/* Percent mode row tint */
+tbody tr:has(td[data-sum-cell][data-active='true']) {
+  background-color: rgba(238, 242, 255, 0.6);
+}
+tbody tr:has(td[data-sum-cell][data-active='true']):hover {
+  background-color: rgba(224, 231, 255, 0.75);
+}
+
+tbody tr:last-child {
+  background-color: #f3f4f6;
+  box-shadow: 0 -4px 10px rgba(15, 23, 42, 0.06);
+  border-top: 1px solid #e5e7eb;
+}
+
+tbody tr:last-child th,
+tbody tr:last-child td {
+  font-size: 0.8rem;
+  color: #6b7280;
+  position: sticky;
+  bottom: 0;
+  background-color: inherit;
 }
 
 button {
   border-radius: 999px;
   border: 1px solid #d1d5db;
   background: white;
-  padding: 4px 10px;
+  padding: 6px 14px;
   font-size: 0.8rem;
   cursor: pointer;
   color: #374151;
   transition:
-    background-color 0.12s ease-out,
-    border-color 0.12s ease-out,
-    transform 0.05s ease-out;
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    box-shadow 0.22s ease-out,
+    transform 0.2s ease-out,
+    opacity 0.2s ease-out;
+}
+
+/* Add row – primary button */
+section > footer > button {
+  background: linear-gradient(180deg, #6366f1, #4f46e5);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+section > footer > button:hover {
+  background: linear-gradient(180deg, #4f46e5, #4338ca);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+  transform: translateY(-1px);
+}
+
+section > footer > button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+}
+
+/* Delete row – icon-style, visible on row hover */
+tbody tr td:last-child {
+  padding-right: 10px;
+}
+
+tbody tr td:last-child button {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  border: none;
+  background: rgba(248, 250, 252, 0.9);
+  color: #94a3b8;
+  opacity: 0;
+  transform: translateY(2px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out,
+    background-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+tbody tr:hover td:last-child button,
+tbody tr td:last-child button:focus {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+tbody tr td:last-child button:hover {
+  background: rgba(254, 226, 226, 0.9);
+  color: #b91c1c;
 }
 
 button:hover {
-  background-color: #eff6ff;
-  border-color: #2563eb;
+  background-color: #eef2ff;
+  border-color: #4f46e5;
+  box-shadow:
+    0 10px 18px rgba(79, 70, 229, 0.25),
+    0 0 0 1px rgba(129, 140, 248, 0.4);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 4px 10px rgba(79, 70, 229, 0.25),
+    0 0 0 1px rgba(129, 140, 248, 0.5);
 }
 
 footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: 20px;
 }
+
+/* Small screens: show delete button without hover so touch works */
+@media (max-width: 768px) {
+  tbody tr td:last-child button {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+}
+

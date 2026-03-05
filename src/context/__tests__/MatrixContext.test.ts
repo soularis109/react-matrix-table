@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Cell, Matrix } from '../../types/matrix'
+import type { Matrix } from '../../types/matrix'
 import {
   createInitialMatrixState,
   getMaxNearestCount,
@@ -254,6 +254,37 @@ describe('MatrixContext reducer', () => {
 
     expect(next.nearestCount).toBe(maxNearest)
     expect(next.highlightedCellIds.length).toBeLessThanOrEqual(maxNearest)
+  })
+
+  it('handles empty matrix (M=0, N=0)', () => {
+    const state = createInitialMatrixState(0, 0, 0)
+
+    expect(state.rows).toBe(0)
+    expect(state.cols).toBe(0)
+    expect(state.matrix).toHaveLength(0)
+    expect(state.nextId).toBe(1)
+    expect(getMaxNearestCount(state)).toBe(0)
+  })
+
+  it('with X=0 highlights no cells on hover', () => {
+    const matrix: Matrix = [
+      [
+        { id: 1, amount: 10 },
+        { id: 2, amount: 20 },
+      ],
+    ]
+    const initial: MatrixState = {
+      ...createSimpleState(matrix, 0),
+      nearestCount: 0,
+    }
+
+    const next = matrixReducer(initial, {
+      type: 'SET_HOVERED_CELL',
+      payload: { rowIndex: 0, colIndex: 0 },
+    })
+
+    expect(next.hoveredCell).not.toBeNull()
+    expect(next.highlightedCellIds).toHaveLength(0)
   })
 })
 

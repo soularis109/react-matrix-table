@@ -9,3 +9,18 @@ export type Cell = {
 
 export type Matrix = Cell[][]
 
+export type ContextState = {
+  matrix: Matrix
+  rows: number
+  cols: number
+  nearestCount: number
+  hoveredCell: {
+    rowIndex: number
+    colIndex: number
+    cell: Cell
+  } | null
+  hoveredSumRowIndex: number | null
+  nextId: number
+  highlightedCellIds: number[]
+}
+
