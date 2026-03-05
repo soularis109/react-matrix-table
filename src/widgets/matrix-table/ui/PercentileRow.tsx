@@ -1,5 +1,5 @@
-import { useMatrix } from '../hooks/useMatrix'
-import { calculatePercentile } from '../utils/calculatePercentile'
+import { useMatrix } from '../../../entities/matrix'
+import { calculatePercentile } from '../../../entities/matrix'
 
 export function PercentileRow() {
   const {

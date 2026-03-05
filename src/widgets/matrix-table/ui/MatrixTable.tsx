@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react'
-import { useMatrix } from '../hooks/useMatrix'
+import { useMatrix } from '../../../entities/matrix'
 import { MatrixRow } from './MatrixRow'
 import { PercentileRow } from './PercentileRow'
 

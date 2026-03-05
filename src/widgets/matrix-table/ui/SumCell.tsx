@@ -1,4 +1,4 @@
-import { useMatrix } from '../hooks/useMatrix'
+import { useMatrix } from '../../../entities/matrix'
 
 type SumCellProps = {
   rowSum: number

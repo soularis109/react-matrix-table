@@ -1,6 +1,6 @@
-import type { Cell } from '../types/matrix'
-import { useMatrix } from '../hooks/useMatrix'
-import { calculateHeatmapPercent } from '../utils/calculateHeatmap'
+import type { Cell } from '../../../entities/matrix'
+import { useMatrix } from '../../../entities/matrix'
+import { calculateHeatmapPercent } from '../../../entities/matrix'
 
 type MatrixCellProps = {
   cell: Cell

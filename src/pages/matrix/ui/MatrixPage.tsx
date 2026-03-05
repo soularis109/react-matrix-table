@@ -1,4 +1,4 @@
-import { MatrixTable } from '../../../components/MatrixTable'
+import { MatrixTable } from '../../../widgets/matrix-table'
 
 export function MatrixPage() {
   return (

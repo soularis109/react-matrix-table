@@ -1,6 +1,6 @@
-import type { Cell } from '../types/matrix'
-import { useMatrix } from '../hooks/useMatrix'
-import { calculateRowSum } from '../utils/calculateRowSum'
+import type { Cell } from '../../../entities/matrix'
+import { useMatrix } from '../../../entities/matrix'
+import { calculateRowSum } from '../../../entities/matrix'
 import { MatrixCell } from './MatrixCell'
 import { SumCell } from './SumCell'
 

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { MatrixProvider } from '../../context/MatrixContext'
-import { MatrixTable } from '../MatrixTable'
+import { MatrixTable } from '../../widgets/matrix-table'
 
 const renderWithProvider = () =>
   render(
