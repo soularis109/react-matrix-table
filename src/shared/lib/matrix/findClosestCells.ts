@@ -1,4 +1,4 @@
-import type { Cell, Matrix } from '../types/matrix'
+import type { Cell, Matrix } from '../../types/matrix'
 
 export function findClosestCells(matrix: Matrix, targetCell: Cell, count: number): number[] {
   if (count <= 0) return []
@@ -18,4 +18,3 @@ export function findClosestCells(matrix: Matrix, targetCell: Cell, count: number
 
   return sortedByDiff.slice(0, count).map((cell) => cell.id)
 }
-

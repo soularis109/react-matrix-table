@@ -13,7 +13,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.13.19",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -43,7 +42,7 @@
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --max-warnings=0",
-      "vitest --runInBand --passWithNoTests"
+      "vitest run --passWithNoTests"
     ]
   }
 }

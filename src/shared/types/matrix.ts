@@ -23,4 +23,3 @@ export type ContextState = {
   nextId: number
   highlightedCellIds: number[]
 }
-

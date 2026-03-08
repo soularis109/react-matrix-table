@@ -22,4 +22,3 @@ describe('calculateHeatmapPercent', () => {
     expect(calculateHeatmapPercent(200, 100)).toBe(100)
   })
 })
-

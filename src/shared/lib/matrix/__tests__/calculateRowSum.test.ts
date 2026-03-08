@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Cell } from '../../types/matrix'
+import type { Cell } from '../../../types/matrix'
 import { calculateRowSum } from '../calculateRowSum'
 
 describe('calculateRowSum', () => {
@@ -17,4 +17,3 @@ describe('calculateRowSum', () => {
     expect(calculateRowSum(row)).toBe(35)
   })
 })
-

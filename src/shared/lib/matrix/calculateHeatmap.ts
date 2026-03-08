@@ -5,4 +5,3 @@ export function calculateHeatmapPercent(value: number, max: number): number {
   const percent = (value / max) * 100
   return Math.max(0, Math.min(100, Math.round(percent)))
 }
-

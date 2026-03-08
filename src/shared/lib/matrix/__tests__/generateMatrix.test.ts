@@ -40,4 +40,3 @@ describe('generateMatrix', () => {
     expect(ids).toEqual([10, 11, 12])
   })
 })
-

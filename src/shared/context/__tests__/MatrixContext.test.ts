@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import type { Matrix } from '../../types/matrix'
+import type { Cell, Matrix } from '../../types/matrix'
 import {
   createInitialMatrixState,
   getMaxNearestCount,
   matrixReducer,
   type MatrixState,
-} from '../MatrixContext'
+} from '../matrixReducer'
 
 const createSimpleState = (matrix: Matrix, nearestCount = 2): MatrixState => {
   const rows = matrix.length
@@ -31,15 +31,14 @@ describe('MatrixContext reducer', () => {
     expect(state.rows).toBe(3)
     expect(state.cols).toBe(4)
     expect(state.matrix).toHaveLength(3)
-    state.matrix.forEach((row) => {
+    state.matrix.forEach((row: Cell[]) => {
       expect(row).toHaveLength(4)
     })
 
-    const ids = state.matrix.flat().map((cell) => cell.id)
+    const ids = state.matrix.flat().map((cell: Cell) => cell.id)
     const uniqueIds = new Set(ids)
     expect(uniqueIds.size).toBe(ids.length)
 
-    // nearestCount should be clamped to valid range
     const maxNearest = getMaxNearestCount(state)
     expect(state.nearestCount).toBeLessThanOrEqual(maxNearest)
   })
@@ -104,7 +103,7 @@ describe('MatrixContext reducer', () => {
     expect(next.matrix).toHaveLength(2)
     expect(next.matrix[1]).toHaveLength(initial.cols)
 
-    const ids = next.matrix.flat().map((cell) => cell.id)
+    const ids = next.matrix.flat().map((cell: Cell) => cell.id)
     const uniqueIds = new Set(ids)
     expect(uniqueIds.size).toBe(ids.length)
   })
@@ -164,7 +163,6 @@ describe('MatrixContext reducer', () => {
     expect(next.hoveredCell).not.toBeNull()
     expect(next.hoveredCell?.cell.id).toBe(2)
     expect(next.highlightedCellIds).toHaveLength(2)
-    // closest to 20 should be 10 (id 1) and 30 (id 3)
     expect(next.highlightedCellIds).toEqual([1, 3])
   })
 
@@ -287,4 +285,3 @@ describe('MatrixContext reducer', () => {
     expect(next.highlightedCellIds).toHaveLength(0)
   })
 })
-

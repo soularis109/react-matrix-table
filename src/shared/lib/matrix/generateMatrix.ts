@@ -1,4 +1,4 @@
-import type { Cell, Matrix } from '../types/matrix'
+import type { Cell, Matrix } from '../../types/matrix'
 
 export function generateMatrix(rows: number, cols: number, startId = 1): Matrix {
   const matrix: Matrix = []
@@ -16,4 +16,3 @@ export function generateMatrix(rows: number, cols: number, startId = 1): Matrix 
 
   return matrix
 }
-

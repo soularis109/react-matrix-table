@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import { MatrixProvider } from '../../context/MatrixContext'
-import { MatrixTable } from '../../widgets/matrix-table'
+import { MatrixProvider } from '@shared/context/MatrixContext'
+import { MatrixTable } from '..'
 
 const renderWithProvider = () =>
   render(
@@ -18,14 +18,11 @@ describe('MatrixTable', () => {
     const table = screen.getByRole('table')
     expect(table).toBeInTheDocument()
 
-    // header cells: index column + 4 data cols + Row SUM + Actions
     const headers = screen.getAllByRole('columnheader')
     expect(headers).toHaveLength(1 + 4 + 2)
     expect(screen.getByText(/Row SUM/i)).toBeInTheDocument()
 
-    // body rows: 3 data rows + 1 percentile row
     const rows = screen.getAllByRole('row')
-    // 1 header row + 3 data rows + 1 percentile row
     expect(rows).toHaveLength(1 + 3 + 1)
 
     expect(screen.getByText(/60th percentile/i)).toBeInTheDocument()
@@ -52,7 +49,6 @@ describe('MatrixTable', () => {
     const updatedValue = Number.parseInt(firstDataCell.textContent ?? '0', 10)
     expect(updatedValue).toBe(initialValue + 1)
 
-    // Percentile row should still be present after update
     expect(screen.getByText(/60th percentile/i)).toBeInTheDocument()
     expect(container.querySelectorAll('tr')).toHaveLength(1 + 3 + 1)
   })
@@ -67,7 +63,6 @@ describe('MatrixTable', () => {
     await user.hover(hoveredCell)
 
     const highlighted = container.querySelectorAll('[data-highlighted]')
-    // nearestCount = 2 by default, so we expect 2 highlighted cells
     expect(highlighted.length).toBe(2)
   })
 
@@ -87,7 +82,6 @@ describe('MatrixTable', () => {
     )
     expect(percentageCells.length).toBeGreaterThan(0)
 
-    // At least one cell in the same row should have a heatmap background
     const row = firstSumCell.closest('tr')
     const dataCellsInRow = row?.querySelectorAll('td[data-row]')
     expect(dataCellsInRow && dataCellsInRow.length).toBeGreaterThan(0)
@@ -156,4 +150,3 @@ describe('MatrixTable', () => {
     expect(highlighted.length).toBe(0)
   })
 })
-
