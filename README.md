@@ -16,15 +16,8 @@ The project follows a **Feature-Sliced Design (FSD)** style layout with addition
 - `src/app` – app-level composition and providers
 - `src/pages` – pages/screens (`MatrixPage`)
 - `src/widgets` – complex UI blocks (matrix table widget)
-- `src/features` – user-facing features (interactions)
 - `src/entities` – domain entities (matrix, cells)
-- `src/shared` – shared UI, lib, config
-- `src/entities/matrix` – matrix domain (types, context, hooks, utils barrel)
-- `src/widgets/matrix-table` – matrix table widget (UI for the matrix)
-- `src/context` – `MatrixContext` implementation (used by `entities/matrix`)
-- `src/hooks` – reusable hooks (e.g. `useMatrix`)
-- `src/utils` – pure utilities (matrix generation, sums, percentiles, heatmap)
-- `src/types` – shared TypeScript types (`Cell`, `Matrix`, ...)
+- `src/shared` – shared UI, lib, context, hooks, types
 
 ## Scripts
 
@@ -37,7 +30,7 @@ The project follows a **Feature-Sliced Design (FSD)** style layout with addition
 
 ## Tooling
 
-- **Testing**: Vitest + React Testing Library (`src/utils/__tests__`, `src/context/__tests__`, `src/components/__tests__`)
+- **Testing**: Vitest + React Testing Library (`src/shared/lib/matrix/__tests__`, `src/shared/context/__tests__`, `src/widgets/matrix-table/__tests__`)
 - **Aliases** (TS + Vite):
   - `@app/*` → `src/app/*`
   - `@entities/*` → `src/entities/*`

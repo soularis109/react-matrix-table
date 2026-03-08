@@ -1,22 +1,20 @@
-import { useMatrix } from '../../../entities/matrix'
+import { memo, useMemo } from 'react'
+import { useMatrixData } from '../../../entities/matrix'
 import { calculatePercentile } from '../../../entities/matrix'
 
-export function PercentileRow() {
-  const {
-    state: { matrix, cols },
-  } = useMatrix()
+export const PercentileRow = memo(function PercentileRow() {
+  const { matrix, cols } = useMatrixData()
 
-  const percentiles: (number | null)[] = []
-
-  for (let colIndex = 0; colIndex < cols; colIndex += 1) {
-    const columnValues = matrix
-      .map((row) => row[colIndex])
-      .filter((cell) => cell !== undefined)
-      .map((cell) => cell.amount)
-
-    const value = calculatePercentile(columnValues, 60)
-    percentiles.push(value)
-  }
+  const percentiles = useMemo(() => {
+    const result: (number | null)[] = []
+    for (let colIndex = 0; colIndex < cols; colIndex += 1) {
+      const columnValues = matrix
+        .map((row) => row[colIndex]?.amount)
+        .filter((v): v is number => typeof v === 'number')
+      result.push(calculatePercentile(columnValues, 60))
+    }
+    return result
+  }, [matrix, cols])
 
   return (
     <tr>
@@ -28,5 +26,4 @@ export function PercentileRow() {
       <td />
     </tr>
   )
-}
-
+})

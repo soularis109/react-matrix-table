@@ -1,7 +1,6 @@
 import { memo } from 'react'
 import type { Cell } from '../../../entities/matrix'
-import { useMatrix } from '../../../entities/matrix'
-import { calculateHeatmapPercent } from '../../../entities/matrix'
+import { useMatrixUI, useMatrixActions, calculateHeatmapPercent } from '../../../entities/matrix'
 
 type MatrixCellProps = {
   cell: Cell
@@ -10,9 +9,6 @@ type MatrixCellProps = {
   isPercentageMode: boolean
   rowSum: number
   rowMax: number
-  isFocused?: boolean
-  /** When 'div', render as div for virtualized table body */
-  as?: 'td' | 'div'
 }
 
 const CELL_STYLE: React.CSSProperties = { position: 'relative' }
@@ -48,19 +44,17 @@ export const MatrixCell = memo(function MatrixCell({
   isPercentageMode,
   rowSum,
   rowMax,
-  isFocused = false,
-  as = 'td',
 }: MatrixCellProps) {
-  const { state, incrementCell, setHoveredCell, clearHoveredCell } = useMatrix()
-  const highlightedCellIds = state.highlightedCellIds ?? []
-  const isHighlighted = highlightedCellIds.includes(cell.id)
+  const { highlightedCellIdsSet } = useMatrixUI()
+  const { incrementCell, setHoveredCell, clearHoveredCell } = useMatrixActions()
+
+  const isHighlighted = highlightedCellIdsSet.has(cell.id)
 
   let displayValue: string | number = cell.amount
   let heatmapWidth = 0
 
   if (isPercentageMode && rowSum > 0) {
-    const percentage = Math.round((cell.amount / rowSum) * 100)
-    displayValue = `${percentage}%`
+    displayValue = `${Math.round((cell.amount / rowSum) * 100)}%`
     heatmapWidth = calculateHeatmapPercent(cell.amount, rowMax)
   }
 
@@ -68,7 +62,6 @@ export const MatrixCell = memo(function MatrixCell({
     'data-row': rowIndex,
     'data-col': colIndex,
     'data-highlighted': isHighlighted || undefined,
-    'data-focused': isFocused || undefined,
     onClick: () => incrementCell(rowIndex, colIndex),
     onMouseEnter: () => setHoveredCell(rowIndex, colIndex),
     onMouseLeave: () => clearHoveredCell(),
@@ -82,13 +75,5 @@ export const MatrixCell = memo(function MatrixCell({
     />
   )
 
-  if (as === 'div') {
-    return (
-      <div role="gridcell" {...commonProps}>
-        {inner}
-      </div>
-    )
-  }
   return <td {...commonProps}>{inner}</td>
 })
-

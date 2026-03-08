@@ -1,12 +1,30 @@
 section {
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--bg-section);
   border-radius: 18px;
   padding: 24px 24px 20px;
   box-shadow:
-    0 18px 45px rgba(15, 23, 42, 0.06),
-    0 2px 8px rgba(15, 23, 42, 0.03);
+    0 18px 45px var(--shadow-section),
+    0 2px 8px var(--shadow-section-sm);
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid var(--bg-section-border);
+}
+
+.matrix-section {
+  width: 1200px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.matrix-section .matrix-table-scroll {
+  width: 100%;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.matrix-section .matrix-table {
+  width: 100%;
+  table-layout: fixed;
+  min-width: 0;
 }
 
 section > header {
@@ -21,6 +39,7 @@ section > header h1 {
   margin: 0;
   font-size: 1.5rem;
   letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 section > header > div {
@@ -35,18 +54,18 @@ section > header label {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 section > header input[type='number'] {
   margin-top: 4px;
   padding: 6px 10px;
   border-radius: 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-input);
   font-size: 0.9rem;
   min-width: 88px;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
   transition:
     border-color 0.18s ease-out,
     box-shadow 0.18s ease-out,
@@ -55,71 +74,46 @@ section > header input[type='number'] {
 
 section > header input[type='number']:focus {
   outline: none;
-  border-color: #2563eb;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+  border-color: var(--focus-ring);
+  background-color: var(--bg-input-focus);
+  box-shadow: 0 0 0 1px var(--focus-ring-soft);
 }
 
-/* Loading skeletons */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    #e5e7eb 0%,
-    #f3f4f6 50%,
-    #e5e7eb 100%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 1.2s ease-in-out infinite;
-  border-radius: 8px;
+section > header input[type='number']:disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
+  border-color: var(--disabled-border);
+  cursor: not-allowed;
+  opacity: 0.9;
 }
 
-@keyframes skeleton-shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-.skeleton-row td,
-.skeleton-row th {
-  padding: 8px 12px;
-  vertical-align: middle;
-}
-
-.skeleton-row .skeleton-cell {
-  height: 20px;
-  min-width: 48px;
-}
-
-.skeleton-header .skeleton-title {
-  height: 28px;
-  width: 140px;
-  border-radius: 6px;
-}
-
-.skeleton-header .skeleton-input {
-  height: 36px;
-  width: 88px;
-  border-radius: 10px;
-}
-
-section > div {
-  overflow-x: auto;
+.matrix-section > .matrix-table-scroll {
   margin: 10px -10px 0;
   padding: 0 10px 2px;
-  -webkit-overflow-scrolling: touch;
 }
 
-.matrix-table-keyboard {
+.matrix-table-keyboard,
+.matrix-table-scroll {
   outline: none;
 }
 
 .matrix-table-keyboard:focus {
-  outline: 2px solid rgba(37, 99, 235, 0.8);
-  outline-offset: 4px;
-  border-radius: 14px;
+  outline: none;
+}
+
+.matrix-table-keyboard [role='row'] {
+  background-color: var(--row-bg);
+  color: var(--text-primary);
+}
+.matrix-table-keyboard [role='row']:hover {
+  background-color: var(--row-hover-bg);
+}
+.matrix-table-keyboard [role='gridcell'][data-row][data-col] {
+  color: var(--text-primary);
+}
+.matrix-table-keyboard [role='gridcell'][data-sum-cell] {
+  color: var(--text-primary);
+  background-color: var(--sum-cell-bg);
 }
 
 table {
@@ -130,8 +124,16 @@ table {
   font-size: 0.9rem;
 }
 
+
+.matrix-table-scroll thead tr {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--thead-bg);
+}
+
 thead tr {
-  background: #f3f4f6;
+  background: var(--thead-bg);
 }
 
 th,
@@ -144,7 +146,7 @@ td {
 th[scope='row'] {
   text-align: left;
   font-weight: 500;
-  color: #4b5563;
+  color: var(--text-row-header);
 }
 
 thead th {
@@ -152,9 +154,23 @@ thead th {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #6b7280;
+  color: var(--text-muted);
   padding-bottom: 10px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
+}
+
+@keyframes row-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+tbody tr[data-new-row],
+.matrix-table-keyboard [role='row'][data-new-row] {
+  animation: row-enter 0.28s ease-out;
 }
 
 tbody tr {
@@ -165,12 +181,12 @@ tbody tr {
 }
 
 tbody tr:not(:last-child) {
-  background-color: #fff;
+  background-color: var(--row-bg);
 }
 
 tbody tr:not(:last-child) td,
 tbody tr:not(:last-child) th[scope='row'] {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 tbody tr > th[scope='row'] {
@@ -182,14 +198,15 @@ tbody tr > td:last-child {
 }
 
 tbody tr:hover {
-  background-color: rgba(249, 250, 251, 0.95);
+  background-color: var(--row-hover-bg);
   box-shadow:
-    0 8px 18px rgba(15, 23, 42, 0.04),
-    0 1px 3px rgba(15, 23, 42, 0.04);
+    0 8px 18px var(--row-hover-shadow),
+    0 1px 3px var(--row-hover-shadow);
   transform: translateY(-1px);
 }
 
-td[data-row][data-col] {
+td[data-row][data-col],
+.matrix-table-keyboard [role="gridcell"][data-row][data-col] {
   cursor: pointer;
   position: relative;
   transition:
@@ -198,7 +215,8 @@ td[data-row][data-col] {
     transform 0.14s ease-out;
 }
 
-td[data-row][data-col] > div {
+td[data-row][data-col] > div,
+.matrix-table-keyboard [role="gridcell"][data-row][data-col] > div {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -206,7 +224,8 @@ td[data-row][data-col] > div {
   min-width: 2.5ch;
 }
 
-td[data-row][data-col] span {
+td[data-row][data-col] span,
+.matrix-table-keyboard [role="gridcell"][data-row][data-col] span {
   position: relative;
   display: inline-block;
   font-variant-numeric: tabular-nums;
@@ -217,48 +236,37 @@ td[data-row][data-col] span {
     opacity 0.18s ease-out;
 }
 
-td[data-row][data-col]:hover {
-  background-color: #eff6ff;
-  box-shadow: inset 0 0 0 1px rgba(191, 219, 254, 0.9);
+td[data-row][data-col]:hover,
+.matrix-table-keyboard [role="gridcell"][data-row][data-col]:hover {
+  background-color: var(--cell-hover-bg);
+  box-shadow: inset 0 0 0 1px var(--cell-hover-border);
   transform: translateY(-1px);
 }
 
-td[data-row][data-col]:active span {
+td[data-row][data-col]:active span,
+.matrix-table-keyboard [role="gridcell"][data-row][data-col]:active span {
   transform: scale(1.05);
   opacity: 0.92;
 }
 
-td[data-highlighted='true'] {
-  background-color: transparent;
-}
-
-td[data-highlighted='true']::before {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border-radius: 10px;
-  background: radial-gradient(circle at top left, rgba(191, 219, 254, 0.55), rgba(59, 130, 246, 0.12));
+td[data-highlighted='true'],
+.matrix-table-keyboard [role="gridcell"][data-highlighted='true'] {
+  background: var(--highlight-bg);
   box-shadow:
-    0 0 0 1px rgba(129, 199, 255, 0.8),
-    0 10px 25px rgba(59, 130, 246, 0.3);
-  opacity: 0.9;
-  z-index: -1;
-  transition:
-    opacity 0.22s ease-out,
-    box-shadow 0.22s ease-out;
-}
-
-td[data-focused='true'] {
-  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.8);
+    inset 0 0 0 1px var(--highlight-border),
+    0 0 0 1px var(--highlight-border),
+    0 10px 25px var(--highlight-shadow);
   border-radius: 10px;
-  transform: translateY(-1px);
+  transition:
+    background 0.22s ease-out,
+    box-shadow 0.22s ease-out;
 }
 
 td[data-sum-cell] {
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary);
   cursor: pointer;
-  background-color: #f3f4ff;
+  background-color: var(--sum-cell-bg);
   border-radius: 0 999px 999px 0;
   padding-right: 16px;
   transition:
@@ -268,53 +276,48 @@ td[data-sum-cell] {
 }
 
 td[data-sum-cell]:hover {
-  background-color: #e0e7ff;
+  background-color: var(--sum-cell-hover-bg);
   box-shadow:
-    inset 0 0 0 1px rgba(129, 140, 248, 0.6),
-    0 0 0 1px rgba(129, 140, 248, 0.15);
+    inset 0 0 0 1px var(--sum-cell-hover-border),
+    0 0 0 1px var(--sum-cell-hover-border);
   transform: translateY(-1px);
 }
 
 td[data-sum-cell][data-active='true'] {
-  background-image: linear-gradient(120deg, rgba(129, 140, 248, 0.16), rgba(59, 130, 246, 0.22));
+  background-image: linear-gradient(120deg, var(--sum-cell-hover-bg), var(--sum-cell-active-border));
   box-shadow:
-    inset 0 0 0 1px rgba(79, 70, 229, 0.55),
-    0 0 0 1px rgba(129, 140, 248, 0.2);
-  color: #4338ca;
+    inset 0 0 0 1px var(--sum-cell-active-border),
+    0 0 0 1px var(--sum-cell-hover-border);
+  color: var(--sum-cell-active-text);
 }
 
-/* Heatmap bar (percent mode) – gradient and transition */
-td[data-row][data-col] > div > div {
+td[data-row][data-col] > div > div,
+.matrix-table-keyboard [role="gridcell"][data-row][data-col] > div > div {
   left: 0;
   top: 0;
   bottom: 0;
   border-radius: 6px;
   transition: width 0.25s ease-out, opacity 0.2s ease-out;
-  background: linear-gradient(
-    90deg,
-    rgba(199, 210, 254, 0.5),
-    rgba(129, 140, 248, 0.35)
-  ) !important;
+  background: var(--heatmap-bar) !important;
 }
 
-/* Percent mode row tint */
 tbody tr:has(td[data-sum-cell][data-active='true']) {
-  background-color: rgba(238, 242, 255, 0.6);
+  background-color: var(--percent-row-bg);
 }
 tbody tr:has(td[data-sum-cell][data-active='true']):hover {
-  background-color: rgba(224, 231, 255, 0.75);
+  background-color: var(--percent-row-hover);
 }
 
 tbody tr:last-child {
-  background-color: #f3f4f6;
-  box-shadow: 0 -4px 10px rgba(15, 23, 42, 0.06);
-  border-top: 1px solid #e5e7eb;
+  background-color: var(--percentile-row-bg);
+  box-shadow: 0 -4px 10px var(--percentile-row-shadow);
+  border-top: 1px solid var(--border);
 }
 
 tbody tr:last-child th,
 tbody tr:last-child td {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--text-muted);
   position: sticky;
   bottom: 0;
   background-color: inherit;
@@ -322,12 +325,12 @@ tbody tr:last-child td {
 
 button {
   border-radius: 999px;
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid var(--btn-default-border);
+  background: var(--btn-default-bg);
   padding: 6px 14px;
   font-size: 0.8rem;
   cursor: pointer;
-  color: #374151;
+  color: var(--btn-default-text);
   transition:
     background-color 0.2s ease-out,
     border-color 0.2s ease-out,
@@ -336,28 +339,39 @@ button {
     opacity 0.2s ease-out;
 }
 
-/* Add row – primary button */
+button:disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
+  border-color: var(--disabled-border);
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 section > footer > button {
-  background: linear-gradient(180deg, #6366f1, #4f46e5);
+  background: var(--btn-primary-bg);
   color: #fff;
   border: none;
   padding: 10px 20px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 4px 12px var(--btn-primary-shadow);
 }
 
-section > footer > button:hover {
-  background: linear-gradient(180deg, #4f46e5, #4338ca);
-  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+section > footer > button:hover:not(:disabled) {
+  background: var(--btn-primary-hover);
+  box-shadow: 0 6px 18px var(--btn-primary-shadow);
   transform: translateY(-1px);
 }
 
-section > footer > button:active {
+section > footer > button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 2px 8px var(--btn-primary-shadow);
 }
 
-/* Delete row – icon-style, visible on row hover */
 tbody tr td:last-child {
   padding-right: 10px;
 }
@@ -366,8 +380,8 @@ tbody tr td:last-child button {
   padding: 6px 12px;
   font-size: 0.75rem;
   border: none;
-  background: rgba(248, 250, 252, 0.9);
-  color: #94a3b8;
+  background: var(--btn-remove-bg);
+  color: var(--btn-remove-text);
   opacity: 0;
   transform: translateY(2px);
   pointer-events: none;
@@ -385,25 +399,25 @@ tbody tr td:last-child button:focus {
   pointer-events: auto;
 }
 
-tbody tr td:last-child button:hover {
-  background: rgba(254, 226, 226, 0.9);
-  color: #b91c1c;
+tbody tr td:last-child button:hover:not(:disabled) {
+  background: var(--btn-remove-hover-bg);
+  color: var(--btn-remove-hover-text);
 }
 
-button:hover {
-  background-color: #eef2ff;
-  border-color: #4f46e5;
+button:hover:not(:disabled) {
+  background-color: var(--btn-default-hover-bg);
+  border-color: var(--btn-default-hover-border);
   box-shadow:
-    0 10px 18px rgba(79, 70, 229, 0.25),
-    0 0 0 1px rgba(129, 140, 248, 0.4);
+    0 10px 18px var(--btn-default-hover-shadow),
+    0 0 0 1px var(--sum-cell-hover-border);
   transform: translateY(-1px);
 }
 
-button:active {
+button:active:not(:disabled) {
   transform: translateY(0);
   box-shadow:
-    0 4px 10px rgba(79, 70, 229, 0.25),
-    0 0 0 1px rgba(129, 140, 248, 0.5);
+    0 4px 10px var(--btn-default-hover-shadow),
+    0 0 0 1px var(--sum-cell-hover-border);
 }
 
 footer {
@@ -412,8 +426,65 @@ footer {
   margin-top: 20px;
 }
 
-/* Small screens: show delete button without hover so touch works */
+@media (max-width: 1200px) {
+  .matrix-section {
+    width: 100%;
+    padding: 20px 20px 16px;
+  }
+
+  .matrix-section > header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 992px) {
+  .matrix-section {
+    padding: 18px 16px 14px;
+  }
+
+  .matrix-section > header h1 {
+    font-size: 1.35rem;
+  }
+
+  .matrix-section .matrix-table-keyboard {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 6px 10px;
+  }
+}
+
 @media (max-width: 768px) {
+  .matrix-section {
+    padding: 16px 12px 12px;
+  }
+
+  .matrix-section > header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .matrix-section > header h1 {
+    font-size: 1.25rem;
+  }
+
+  .matrix-section > header > div {
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+
+  thead th {
+    font-size: 0.72rem;
+  }
+
   tbody tr td:last-child button {
     opacity: 1;
     pointer-events: auto;
@@ -421,3 +492,34 @@ footer {
   }
 }
 
+@media (max-width: 480px) {
+  .matrix-section {
+    padding: 12px 10px 10px;
+    border-radius: 14px;
+  }
+
+  .matrix-section > header h1 {
+    font-size: 1.1rem;
+  }
+
+  section > header input[type='number'] {
+    min-width: 72px;
+    padding: 5px 8px;
+    font-size: 0.85rem;
+  }
+
+  .matrix-section .matrix-table-keyboard {
+    font-size: 0.8rem;
+  }
+
+  th,
+  td {
+    padding: 5px 6px;
+    font-size: 0.8rem;
+  }
+
+  .matrix-section > footer > button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
