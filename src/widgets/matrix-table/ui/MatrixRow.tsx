@@ -1,6 +1,8 @@
 import { memo, useCallback, useMemo } from 'react'
-import type { Cell } from '../../../entities/matrix'
-import { useMatrixUI, calculateRowSum, calculateRowMax } from '../../../entities/matrix'
+import type { Cell } from '@shared/types/matrix'
+import { useMatrixUI } from '@shared/hooks/useMatrix'
+import { calculateRowSum } from '@shared/lib/matrix/calculateRowSum'
+import { calculateRowMax } from '@shared/lib/matrix/calculateRowMax'
 import { MatrixCell } from './MatrixCell'
 import { SumCell } from './SumCell'
 

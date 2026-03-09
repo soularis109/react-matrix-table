@@ -1,6 +1,7 @@
 import { memo } from 'react'
-import type { Cell } from '../../../entities/matrix'
-import { useMatrixUI, useMatrixActions, calculateHeatmapPercent } from '../../../entities/matrix'
+import type { Cell } from '@shared/types/matrix'
+import { useMatrixUI, useMatrixActions } from '@shared/hooks/useMatrix'
+import { calculateHeatmapPercent } from '@shared/lib/matrix/calculateHeatmap'
 
 type MatrixCellProps = {
   cell: Cell

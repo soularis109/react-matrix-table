@@ -1,5 +1,6 @@
 import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import { useMatrixData, useMatrixActions, MAX_ROWS_COLS } from '../../../entities/matrix'
+import { useMatrixData, useMatrixActions } from '@shared/hooks/useMatrix'
+import { MAX_ROWS_COLS } from '@shared/constants'
 import { MatrixRow } from './MatrixRow'
 import { PercentileRow } from './PercentileRow'
 

@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useMatrixUI, useMatrixActions } from '../../../entities/matrix'
+import { useMatrixUI, useMatrixActions } from '@shared/hooks/useMatrix'
 
 type SumCellProps = {
   rowSum: number

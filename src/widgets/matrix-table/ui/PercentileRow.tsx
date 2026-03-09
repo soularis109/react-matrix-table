@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
-import { useMatrixData } from '../../../entities/matrix'
-import { calculatePercentile } from '../../../entities/matrix'
+import { useMatrixData } from '@shared/hooks/useMatrix'
+import { calculatePercentile } from '@shared/lib/matrix/calculatePercentile'
 
 export const PercentileRow = memo(function PercentileRow() {
   const { matrix, cols } = useMatrixData()
